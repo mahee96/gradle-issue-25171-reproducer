@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+sourceSets{
+    main{
+        java {
+            compileClasspath += files('libsrc')
+        }
+    }
+}
+
+task run(type: JavaExec){
+    classpath += sourceSets.main.runtimeClasspath
+    mainClass =  'Car'
+}

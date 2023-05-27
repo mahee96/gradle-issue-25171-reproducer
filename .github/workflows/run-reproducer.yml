@@ -7,11 +7,36 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-java@v2
-      with:
-        distribution: 'zulu'
-        java-version: 11
-    - uses: gradle/gradle-build-action@v2
-      with:
-        arguments: help --info
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 11
+      - uses: gradle/gradle-build-action@v2
+        with:
+          arguments: run #--info
+  javac:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 11
+      - name: javac -version
+        run: javac -version
+      - name: Execute javac with classpath containing *.java sources
+        run: javac -cp libsrc src/main/java/Car.java
+      - name: ls
+        run: ls -R
+      - name: Test run of the application - WINDOWS
+        if: runner.os == 'Windows'
+        run: java  -cp "libsrc;src/main/java" Car
+      - name: Test run of the application - LINUX/MACOS
+        if: ${{ runner.os == 'macOS' || runner.os == 'Linux' }}
+        run: java  -cp "libsrc:src/main/java" Car
+
+
